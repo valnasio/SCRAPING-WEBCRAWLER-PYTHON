@@ -1,11 +1,19 @@
+from unidecode import unidecode
 import requests
 from bs4 import BeautifulSoup
 import re
 
-#site:    https://www.magazineluiza.com.br/
+import locale
+
+# Configurar o local para o Brasil
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+
+#site:   https://www.bocarosadamakeup.com.br/
 
 
 class Crawler:
+
+
 
     def request_data(self, url: str):
         response = requests.get(url)
@@ -13,35 +21,38 @@ class Crawler:
         return soup
 
     def extract_from_site(self):
-        raw_site = self.request_data("https://pesquisa.marisa.com.br/hotsite/camisetas-polos-e-regatas-masculinas?id=20231005&name=MOSAICO6&position=P02&category=HOMEPAGE&criativo=CAMISETAS_REGATAS")
+        raw_site = self.request_data("https://www.bocarosadamakeup.com.br/")
 
-        products = raw_site.find_all("li", {"class": "nm-product-item"})
+        products = raw_site.find_all("div", {"class": "item-container"})
 
         for product in products:
-            image = product.find("img", {"class": "nm-product-img"})
-            title = product.find("h4", {"class": "nm-product-name"})
-            raw_price = product.find("span", {"class": "price-number"})
-            
+            image = product.find("img", {"class": "ilazyloaded"})
+            title = product.find("div", {"class": "item-name"})
+            raw_price = product.find("div", {"class": "item-price"})
+         
 
             if raw_price:
                 pattern_price = r"R\$\s*([\d\.]+),(\d+)"
                 match = re.search(pattern_price, raw_price.text)
 
                 if match:
-                    price = match.group(1)
+                    price = '{:,.2f}'.format(float(match.group(1).replace('.', '').replace(',', '.'))).replace(',', ',')
                 else:
                     price = "Preço não encontrado"
             else:
                 price = "Preço não encontrado"
 
             data = {
-                "image": image["src"] if image else "Imagem não encontrada",
-                "title": title.text.strip() if title else "Título não encontrado",
-                "price": price,
+                "Imagem": image.attrs('src') if image else "Imagem nao encontrada",
+                "Titulo": title.text.strip() if title else "Título nao encontrado",
+                "Preco R$":  price,
             }
 
-            print(data)
-            break
+            print("Produto:")
+            for key, value in data.items():
+                print(f"{key}: {value}")
+
+            print("-" * 50) 
 
 if __name__ == "__main__":
     crawler = Crawler()
