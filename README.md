@@ -12,13 +12,13 @@ Configurando o Ambiente Virtual
 
     Clone o repositório do Git (caso ainda não tenha feito isso):
 
-    bash
+   
 
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone https://github.com/valnasio/Webcrawler_Curso.git
 
 Navegue até o diretório do projeto:
 
-bash
+
 
 cd seu-repositorio
 
@@ -34,7 +34,7 @@ venv\Scripts\activate
 
 No macOS e Linux:
 
-bash
+
 
     source venv/bin/activate
 
