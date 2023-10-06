@@ -54,13 +54,24 @@ class Crawler:
             else:
                 price = "Preço não encontrado"
 
-            # Crie um dicionário de dados com imagem, título e preço
+                        # REFERENCIANDO O LINK DO PRODUTO
+            link = product.find('a', {'class': 'item-actions m-top-half'})
+
+            # Verifique se o link foi encontrado
+            if link:
+                # Se o link existe, acesse o atributo 'href'
+                link_url = link.get('href')
+            else:
+                # Se o link não foi encontrado, defina como uma string vazia ou uma mensagem de erro
+                link_url = "Link não encontrado"
+
+            # Crie um dicionário de dados com imagem, título, preço e link
             data = {
                 "Imagem": image.attrs['src'] if image else "Imagem não encontrada",
                 "Título": title.text.strip() if title else "Título não encontrado",
-                "Preço R$":  price,
-            }
-
+                "Preço R$": price,
+                "Link": link_url
+}
             # Imprima os dados do produto
             print("Produto:")
             for key, value in data.items():
